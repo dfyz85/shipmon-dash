@@ -7,6 +7,20 @@ from bson.son import SON
 client = pymongo.MongoClient("mongodb://dfyz:rtyfghvbn65@briese-shard-00-00-vryeg.mongodb.net:27017,briese-shard-00-01-vryeg.mongodb.net:27017,briese-shard-00-02-vryeg.mongodb.net:27017/test?ssl=true&replicaSet=briese-shard-0&authSource=admin&retryWrites=true&w=majority")
 brieseDb = client['shipsBriese']
 shipsPossition = brieseDb['shipsPosition'] 
+vesselsName = brieseDb['shipsData']
+
+def getVesselsFromDB():
+  pipeline = [
+    {"$group":{
+      "_id":"$imo",
+      "label":{"$first":"$name"},
+      "value":{"$first":"$imo"}
+      }
+    },
+    {"$project": { "_id": 0 }}
+  ]
+  db = vesselsName.aggregate(pipeline)
+  return(list(db))
 
 def getDFfromDB():
   pipeline = [
