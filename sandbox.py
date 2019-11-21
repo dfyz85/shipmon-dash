@@ -46,6 +46,7 @@ class CustomDash(dash.Dash):
 external_stylesheets = [dbc.themes.BOOTSTRAP]
 dash.Dash.interpolate_index
 app = CustomDash(__name__, external_stylesheets=external_stylesheets)
+server = app.server
 
 MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoiZGZ5ejg1IiwiYSI6ImNrMjV5YnlpZTBnNDIzbmt4a3A3OW9qbDYifQ.fmYKw9jhF5XKNnUh8nkyAA"
 MAPBOX_STYLE = "mapbox://styles/dfyz85/ck25zcdt704wp1cn4otpx4hwt"
@@ -199,4 +200,4 @@ def display_page(mapCheckbox):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True,port=880)
+    app.run_server(host='0.0.0.0',debug=False,port=8080)
