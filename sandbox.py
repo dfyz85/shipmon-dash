@@ -138,9 +138,9 @@ map_layout_mapbox = {
         "accesstoken": MAPBOX_ACCESS_TOKEN,
         "style": MAPBOX_STYLE,
         "center": {"lat": 40, "lon":0},
-        "zoom":2,
-        "minzoom":2,
-        "maxzoom":8
+        "zoom":5,
+        "minzoom":5,
+        "maxzoom":9
     },
     "showlegend": False,
     "autosize": True,
@@ -152,11 +152,13 @@ map_layout_mapbox = {
 map_graph = html.Div(
     id="world-map-wrapper",
     children=[
-        dcc.Graph(
-            id="world-map",
-            figure={"data": map_data2, "layout": map_layout},
-            config={"displayModeBar": False, "scrollZoom": False},
-        ),
+        dcc.Loading(
+            dcc.Graph(
+                id="world-map",
+                figure={"data": map_data2, "layout": map_layout},
+                config={"displayModeBar": False, "scrollZoom": False},
+            )
+         ),
     ],
 )
 map_graph_mapbox = dbc.Container(
@@ -186,18 +188,18 @@ className="mt-4"
 )
 contentLayout = html.Div([navbar, map_graph_mapbox])
 app.layout = contentLayout
-@app.callback(Output(component_id='world-map-wrapper-mapbox', component_property='children'),
-              [Input('navbar-checkbox', 'value')])
-def display_page(mapCheckbox):
-    if 'NYC' in mapCheckbox :
-        return [dcc.Graph(
-                        className="main-wrapper",
-                        id="world-map-mapbox",
-                        figure={"data": map_data2_mapbox, "layout": map_layout_mapbox},
-                        config={"displayModeBar": False, "scrollZoom": False},
-                        )]
-    else:
-        return []
+# @app.callback(Output(component_id='world-map-wrapper-mapbox', component_property='children'),
+#               [Input('navbar-checkbox', 'value')])
+# def display_page(mapCheckbox):
+#     if 'NYC' in mapCheckbox :
+#         return [dcc.Graph(
+#                         className="main-wrapper",
+#                         id="world-map-mapbox",
+#                         figure={"data": map_data2_mapbox, "layout": map_layout_mapbox},
+#                         config={"displayModeBar": False, "scrollZoom": False},
+#                         )]
+#     else:
+#         return []
 
 
 
