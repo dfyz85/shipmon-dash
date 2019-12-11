@@ -138,9 +138,9 @@ map_layout_mapbox = {
         "accesstoken": MAPBOX_ACCESS_TOKEN,
         "style": MAPBOX_STYLE,
         "center": {"lat": 40, "lon":0},
-        "zoom":5,
-        "minzoom":5,
-        "maxzoom":9
+        "zoom":3,
+        "minzoom":3,
+        "maxzoom":7
     },
     "showlegend": False,
     "autosize": True,
