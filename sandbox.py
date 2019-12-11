@@ -49,7 +49,7 @@ app = CustomDash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 
 MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoiZGZ5ejg1IiwiYSI6ImNrMjV5YnlpZTBnNDIzbmt4a3A3OW9qbDYifQ.fmYKw9jhF5XKNnUh8nkyAA"
-MAPBOX_STYLE = "mapbox://styles/dfyz85/ck25zcdt704wp1cn4otpx4hwt"
+MAPBOX_STYLE = "mapbox://styles/dfyz85/ck25zcdt704wp1cn4otpx4hwt?optimize=true"
 vesselsName = getVesselsFromDB()
 
 vesselsNameLink = dcc.Dropdown(
@@ -138,7 +138,9 @@ map_layout_mapbox = {
         "accesstoken": MAPBOX_ACCESS_TOKEN,
         "style": MAPBOX_STYLE,
         "center": {"lat": 40, "lon":0},
-        "zoom":1.26
+        "zoom":2,
+        "minzoom":2,
+        "maxzoom":8
     },
     "showlegend": False,
     "autosize": True,
