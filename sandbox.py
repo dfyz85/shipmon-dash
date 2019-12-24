@@ -131,7 +131,7 @@ map_data2_mapbox = [go.Scattermapbox(
                         'size': 6,
                         'color':'#228B22'                        
                     },
-                ) for i in range(len(df.index))]
+                ) ]
 
 map_layout_mapbox = {
     "mapbox": {
