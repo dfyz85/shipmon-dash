@@ -16,6 +16,7 @@ app = dash.Dash(
         {"name": "viewport", "content": "width=device-width, initial-scale=1"}
     ],
  )
+server = app.server #For Digital ocean
 mapOffLine = 'http://localhost/assets/'
 #SIDEBAR
 sidebar_header = dbc.Row(
