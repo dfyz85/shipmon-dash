@@ -1,207 +1,192 @@
+import pandas as pd
 import dash
-import dash_core_components as dcc
 import dash_bootstrap_components as dbc
+import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import State, Input, Output
-import plotly.graph_objs as go
+import dash_daq as daq
+from dash.dependencies import Input, Output, State
+from getFromDb import getVesselsFromDB, getDFfromDB
+from tools.dashboardtools import tanks, vesselspositionScat, vesselspositionMapbox
 
-from getFromDb import getDFfromDB, getVesselsFromDB
-
-class CustomDash(dash.Dash):
-    def interpolate_index(self,**kwargs):
-        kwargs['app_entry'] = """
-                              <div id="react-entry-point">
-                                  <div class="loader"></div>
-                                  <div class="logo"> Briese</div>
-                              </div>
-                              """
-        return '''<!DOCTYPE html>
-                      <html>
-                        <head>
-                            {metas}
-                            <title>{title}</title>
-                            {favicon}
-                            {css}
-                            <link href="https://fonts.googleapis.com/css?family=Teko:700&display=swap" rel="stylesheet"> 
-                        </head>
-                        <body>
-                            {app_entry}
-                            <footer>
-                                {config}
-                                {scripts}
-                                {renderer}
-                            </footer>
-                        </body>
-                    </html>
-        '''.format(app_entry=kwargs.get('app_entry'),
-                                      config=kwargs.get('config'),
-                                      scripts=kwargs.get('scripts'),
-                                      renderer=kwargs.get('renderer'),
-                                      metas=kwargs.get('metas'),
-                                      css=kwargs.get('css'),
-                                      favicon=kwargs.get('favicon'),
-                                      title=kwargs.get('title')
-                                      )
-
+dfVessels  = getDFfromDB()#'local'
 external_stylesheets = [dbc.themes.BOOTSTRAP]
-dash.Dash.interpolate_index
-app = CustomDash(__name__, external_stylesheets=external_stylesheets)
-server = app.server
+app = dash.Dash(
+    external_stylesheets=external_stylesheets,
+    meta_tags=[
+        {"name": "viewport", "content": "width=device-width, initial-scale=1"}
+    ],
+ )
+mapOffLine = 'http://localhost/assets/'
+#SIDEBAR
+sidebar_header = dbc.Row(
+    [
+        dbc.Col(html.Img(src='/assets/logo.gif', id='brand-logo')),
+        dbc.Col(
+            html.Button(
+                # use the Bootstrap navbar-toggler classes to style the toggle
+                html.Span(className="navbar-toggler-icon"),
+                className="navbar-toggler",
+                # the navbar-toggler classes don't set color, so we do it here
+                style={
+                    "color": "white",
+                    "border-color": "white",
+                },
+                id="toggle",
+            ),
+            # the column containing the toggle will be only as wide as the
+            # toggle, resulting in the toggle being right aligned
+            width="auto",
+            # vertically align the toggle in the center
+            align="center",
+        ),
+    ]
+ )
 
-MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoiZGZ5ejg1IiwiYSI6ImNrMjV5YnlpZTBnNDIzbmt4a3A3OW9qbDYifQ.fmYKw9jhF5XKNnUh8nkyAA"
-MAPBOX_STYLE = "mapbox://styles/dfyz85/ck25zcdt704wp1cn4otpx4hwt?optimize=true"
-vesselsName = getVesselsFromDB()
-
-vesselsNameLink = dcc.Dropdown(
+vesselsName = getVesselsFromDB()#'local'
+vesselsNameLink = dcc.Dropdown( 
     id="navbar-vessel-name",
     options=[
-        {'label': f"{vesselsName[x]['label']}", 'value': f"{vesselsName[x]['value']}"} for x in range(len(vesselsName))
+        {'label': f"{vesselsName[x]['label']}", 'value': f"{vesselsName[x]['value']},{vesselsName[x]['label']}"} for x in range(len(vesselsName))
     ],
-    placeholder="Select vessel."
-)
-navbarCheckBox = dcc.Checklist(
-    options=[
-        {'label': 'New York City', 'value': 'NYC'},
-    ],
-    id="navbar-checkbox",
-    value=['NYC'],
-    labelStyle={'display': 'inline-block'}
-)  
-
-navbar = dbc.NavbarSimple(
-    children=[
-        navbarCheckBox,
-        dbc.NavItem(dbc.NavLink("Link", href="#")),
-        vesselsNameLink
-    ],
-    brand="ShipsMonitor",
-    brand_href="#",
-    sticky="top",
-)
-
-df = getDFfromDB()
-map_data2 = [go.Scattergeo(
-                    lat=df['lat'],
-                    lon=df['lon'],
-                    text=df['name'],
-                    mode='markers',
-                    opacity=1,
-                    marker={
-                        'size': 4,
-                        'line': {'width': 0.5, 'color': 'white'}
-                    },
-                ) for i in range(len(df.index))]
-
-map_layout = {
-    "title": 'Feb. 2011 American Airline flight paths',
-    "showlegend": False,
-    "geo":{
-        "scope": 'world',
-        "projection": {
-            "type":'equirectangular'
-        },
-        "showocean":True,
-        "showsubunits":True,
-        "showcoastlines":False,
-        "showcountries":True,
-        "boardercolor":"black",
-        #"showrivers":True,
-        "rivercolor": "blue",
-        #"showlakes":True,
-        "lakecolor": "blue",
-        "showland": True,
-        "landcolor": 'rgb(243,243,243)',
-        "countrycolor": 'rgb(204,204,204)',
-        #"lonaxis": { 'range': [-30, 60] },
-        #"lataxis": { 'range': [30, 70] }
-    }
-}
-map_data2_mapbox = [go.Scattermapbox(
-                    lat=df['lat'],
-                    lon=df['lon'],
-                    text=df['name'],
-                    hoverinfo="text+lon+lat",
-                    mode="markers+text",
-                    opacity=1,
-                    textposition='top center',
-                    textfont={
-                        "color":"white"
-                    },
-                    marker={
-                        'size': 6,
-                        'color':'#228B22'                        
-                    },
-                ) ]
-
-map_layout_mapbox = {
-    "mapbox": {
-        "accesstoken": MAPBOX_ACCESS_TOKEN,
-        "style": MAPBOX_STYLE,
-        "center": {"lat": 50, "lon":0},
-        "zoom":3,
-        "minzoom":3,
-        "maxzoom":7
-    },
-    "showlegend": False,
-    "autosize": True,
-    #"paper_bgcolor": "#1e1e1e",
-    #"plot_bgcolor": "#1e1e1e",
-    "margin": {"t": 0, "r": 0, "b": 0, "l": 0},
-}
-
-map_graph = html.Div(
-    id="world-map-wrapper",
-    children=[
-        dcc.Loading(
-            dcc.Graph(
-                id="world-map",
-                figure={"data": map_data2, "layout": map_layout},
-                config={"displayModeBar": False, "scrollZoom": False},
-            )
-         ),
-    ],
-)
-map_graph_mapbox = dbc.Container(
-    dbc.Row(
-        dbc.Col(
-            html.Div(
-                id="world-map-wrapper-mapbox",
-                children=[
-                    dcc.Graph(
-                        className="main-wrapper",
-                        id="world-map-mapbox",
-                        figure={"data": map_data2_mapbox, "layout": map_layout_mapbox},
-                        config={"displayModeBar": False, "scrollZoom": False},
-                        ),  
-                    ],
+    value='',
+    placeholder="Select vessel.",
+    className='m-0',
+    style={'color':'black'}
+  )
+#veseelsCharterLink = dcc.Dropdown(style={'color':'black'})
+#veseelsGroupLink = dcc.Dropdown(style={'color':'black'})
+sidebar = html.Div(
+    [
+        sidebar_header,
+        # we wrap the horizontal rule and short blurb in a div that can be
+        # hidden on a small screen
+        html.Div(
+            [
+                html.Hr(),
+                html.P(
+                    "A responsive sidebar layout with collapsible navigation "
+                    "links.",
+                    className="lead",
                 ),
-                className = "p-0"
-            )
+            ],
+            id="blurb",
         ),
-    fluid=True)
+        # use the Collapse component to animate hiding / revealing links
+        dbc.Collapse(
+            dbc.Nav(
+                [
+                    # html.P('Group filter'),
+                    # veseelsGroupLink,
+                    # html.P('Charter filter'),
+                    # veseelsCharterLink,
+                     html.P('Vessel filter'),
+                    vesselsNameLink,
+                ],
+                vertical=True,
+                pills=True,
+            ),
+            id="collapse",
+        ),
+    ],
+    id="sidebar",
+ )
 
-form2 = dbc.Container([
-    map_graph_mapbox,
-    map_graph
-],
-className="mt-4"
-)
-contentLayout = html.Div([navbar, map_graph_mapbox])
-app.layout = contentLayout
-# @app.callback(Output(component_id='world-map-wrapper-mapbox', component_property='children'),
-#               [Input('navbar-checkbox', 'value')])
-# def display_page(mapCheckbox):
-#     if 'NYC' in mapCheckbox :
-#         return [dcc.Graph(
-#                         className="main-wrapper",
-#                         id="world-map-mapbox",
-#                         figure={"data": map_data2_mapbox, "layout": map_layout_mapbox},
-#                         config={"displayModeBar": False, "scrollZoom": False},
-#                         )]
-#     else:
-#         return []
+#CONTENT
+vesselNameContent = dbc.Col(
+    dbc.Label(
+        'FLEET',
+         id='vessel-name-content'
+    ),
+    className='col-sm-12 pl-2 label-background-grey',
+    id='vessel-name-content-div'
+ )
+tankHFO = tanks(180,'HFO','tons','black',110)
+tankMGO = tanks(100,'MGO','tons','#ef647c',50)
+tankFwater = tanks(150,'Fresh Water','tons','blue',70)
+tankSewageBilge = tanks(80,'Sewage','tons','brown',5)
+#tempME 
+#Vessels MAP-BOX
+vesselsPositionMap = dbc.Container(
+        dbc.Row(
+            dbc.Col(
+                html.Div(
+                    id="world-map-wrapper-mapbox",
+                    children=[
+                        dcc.Graph(
+                            className="main-wrapper",
+                            id="world-map-mapbox",
+                            figure=vesselspositionMapbox(dfVessels),
+                            config={"displayModeBar": False, "scrollZoom": False},
+                            ),  
+                        ],
+                    ),
+                    className = "p-0"
+                )
+            ),
+        fluid=True,
+        className = "p-0")
+content = html.Div(
+    [
+        dbc.Row(vesselNameContent),
+        dbc.Tabs(
+            [
+                dbc.Tab(
+                    [
+                        dbc.Container(
+                        [
+                            dbc.Row(vesselsPositionMap),
+                        ],
+                        fluid=True)
+                    ],
+                    label="Map"),
+                dbc.Tab(
+                    [
+                        dbc.Container(
+                        [
+                            dbc.Row([tankHFO,tankMGO,tankFwater,tankSewageBilge]),
+                            dbc.Row([])
+                        ],
+                        fluid=True)
+                    ],
+                    label="Engine room",
+                ),
+                dbc.Tab(label="Wekly report")
+            ]
+        ),
+    ],
+    id="page-content")
+app.layout = html.Div(
+    [
+        dcc.Store(
+            id = 'store-data',
+            data = {'vessels-position': dict(dfVessels) }
+         ),
+        sidebar, 
+        content
+     ]
+ )
 
+@app.callback(
+    Output("collapse", "is_open"),
+    [Input("toggle", "n_clicks")],
+    [State("collapse", "is_open")],
+ )
+def toggle_collapse(n, is_open):
+    if n:
+        return not is_open
+    return is_open
 
+@app.callback([Output('vessel-name-content','children'),
+              Output('world-map-mapbox','figure')],
+              [Input('navbar-vessel-name', 'value')],
+              [State('store-data','data')])
+def display_label(value,data):
+    if value:
+        df = pd.DataFrame(data['vessels-position'])
+        #vesselPosition = df.loc[df['name'].str.contains(value.split(',')[1])]
+        return str(f"MV {value.split(',')[1]}"), vesselspositionMapbox(df,value)
+    else: 
+        return 'FLEET', vesselspositionMapbox(data['vessels-position'])
 
-if __name__ == '__main__':
-    app.run_server(host='0.0.0.0',debug=False,port=8080)
+if __name__ == "__main__":
+    app.run_server(debug=True,port=80,host="0.0.0.0")
