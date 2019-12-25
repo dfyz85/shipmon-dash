@@ -1,15 +1,24 @@
+import sys
 import pandas as pd
 import pymongo
 from pprint import pprint
 from bson.son import SON
-
 
 client = pymongo.MongoClient("mongodb://dfyz:rtyfghvbn65@briese-shard-00-00-vryeg.mongodb.net:27017,briese-shard-00-01-vryeg.mongodb.net:27017,briese-shard-00-02-vryeg.mongodb.net:27017/test?ssl=true&replicaSet=briese-shard-0&authSource=admin&retryWrites=true&w=majority")
 brieseDb = client['shipsBriese']
 shipsPossition = brieseDb['shipsPosition'] 
 vesselsName = brieseDb['shipsData']
 
-def getVesselsFromDB():
+try:
+  clientLocal = pymongo.MongoClient("mongodb://127.0.0.1:27017/",serverSelectionTimeoutMS=90000)
+except:
+  print("Could not connect to MongoDB.")
+  sys.exit(1)
+brieseDbLocal = clientLocal['shipsBriese']
+shipsPossitionLocal = brieseDbLocal['shipsPosition']
+vesselsNameLocal = brieseDbLocal['shipsData']
+
+def getVesselsFromDB(server='cloud'):
   pipeline = [
     {"$group":{
       "_id":"$imo",
@@ -17,12 +26,16 @@ def getVesselsFromDB():
       "value":{"$first":"$imo"}
       }
     },
-    {"$project": { "_id": 0 }}
+    {"$project": { "_id": 0 }},
+    {"$sort":SON([("label", 1)])}
   ]
-  db = vesselsName.aggregate(pipeline)
+  if server == 'cloud':
+    db = vesselsName.aggregate(pipeline)
+  elif server == 'local':
+    db = vesselsNameLocal.aggregate(pipeline)
   return(list(db))
 
-def getDFfromDB():
+def getDFfromDB(server='cloud'):
   pipeline = [
     {"$sort": SON([("reordingTime", -1)])},
     {"$group": {
@@ -46,7 +59,56 @@ def getDFfromDB():
     { "$project": { "fromShipsData": 0 }
     }
   ]
-
-  db = shipsPossition.aggregate(pipeline)
+  if server == 'cloud':
+    db = shipsPossition.aggregate(pipeline)
+  elif server == 'local':
+    db = shipsPossitionLocal.aggregate(pipeline)
   df = pd.DataFrame(list(db))
   return df
+
+def getVesselReportDBLocal(vesselIMO):
+  if vesselIMO:
+    pipeline = [
+      {"$match":{
+        "imo":vesselIMO
+      }
+      },
+      {"$group":{
+        "_id":"$time",
+        "time":{"$first":"$time"},
+        "area":{"$first":"$area"},
+        "status":{"$first":"$status"},
+        "speed":{"$first":"$speed"},
+        "course":{"$first":"$course"},
+        "draugt":{"$first":"$draught"}
+        }
+      },
+      {"$project": { "_id": 0} },
+      {"$sort":SON([("time", -1)])}
+    ]
+    db = shipsPossitionLocal.aggregate(pipeline)
+    df = pd.DataFrame(list(db))
+    return(df)
+
+def getVesselsPointsDBLocal():
+  pipeline=[
+    {"$group":
+        {
+          "_id": "$imo",
+          "count":SON([("$sum",1)]),
+          "vesselName":{"$first":"$vesselName"}
+        } 
+    },
+    {"$sort":SON([("vesselName", 1)])}
+  ]
+  db = shipsPossitionLocal.aggregate(pipeline)
+  df = pd.DataFrame(list(db))
+  return(df)
+
+# x = getVesselReportDBLocal('9261994')
+# x = 
+#for i in x.columns:
+  #print(i)
+
+#x = getDFfromDB('local')
+#print(x.loc[x.name.str.contains('BBC LIMA'),['name','lat','lon']])
