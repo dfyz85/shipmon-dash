@@ -7,7 +7,7 @@ import pandas
 from shapely.geometry import shape, Point
 
 from getFromDb import getDFfromDB
-
+#Content tank visualization
 def tanks(tankMax=100, tankLabel='Tank',tankUnits='tons',tankColor='blue',tankValue=0):
     bar = daq.Tank(
         className = 'ml-2 pb-2',
@@ -29,8 +29,8 @@ def tanks(tankMax=100, tankLabel='Tank',tankUnits='tons',tankColor='blue',tankVa
                 ],
                 className='m-1 mt-2'
             )
-
-def vesselspositionScat(df):
+#Use Plotly Graph
+def vesselspositionScat(df): 
     map_data = [go.Scattergeo(
                     lat=df['lat'],
                     lon=df['lon'],
@@ -77,6 +77,7 @@ def vesselspositionScat(df):
      }
     figure={"data": map_data, "layout": map_layout}
     return figure
+#Use Mapbox
 def vesselspositionMapbox(df,vessel='deafult'):
     MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoiZGZ5ejg1IiwiYSI6ImNrMjV5YnlpZTBnNDIzbmt4a3A3OW9qbDYifQ.fmYKw9jhF5XKNnUh8nkyAA"
     MAPBOX_STYLE = "mapbox://styles/dfyz85/ck25zcdt704wp1cn4otpx4hwt"
@@ -103,8 +104,8 @@ def vesselspositionMapbox(df,vessel='deafult'):
             "accesstoken": MAPBOX_ACCESS_TOKEN,
             "style": MAPBOX_STYLE,
             "center": {"lat": 50, "lon":0},
-            "zoom":3,
-            "minzoom":3,
+            "zoom":2,
+            "minzoom":2,
             "maxzoom":7
         },
         "showlegend": False,
@@ -135,6 +136,7 @@ def vesselspositionMapbox(df,vessel='deafult'):
         map_layout_mapbox['mapbox']['center'] = {'lat':int(float(dff['lat'].values[0])-5), 'lon':int(float(dff['lon'].values[0]))}
     figure={"data": map_data_mapbox, "layout": map_layout_mapbox}
     return figure
+#Side-panel statistiks
 def getVesselsStatistiks(df):
     with open('geodata/ECA-EU.geojson') as f:
         js1 = json.load(f)
