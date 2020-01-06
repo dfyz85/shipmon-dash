@@ -72,7 +72,7 @@ def vesselspositionScat(df):
             "landcolor": 'rgb(243,243,243)',
             "countrycolor": 'rgb(204,204,204)',
             "lonaxis": { 'range': [-20, 40] },
-            "lataxis": { 'range': [35, 68] }
+            "lataxis": { 'range': [32, 67] }
         }
      }
     figure={"data": map_data, "layout": map_layout}
