@@ -104,8 +104,8 @@ def vesselspositionMapbox(df,vessel='deafult'):
             "accesstoken": MAPBOX_ACCESS_TOKEN,
             "style": MAPBOX_STYLE,
             "center": {"lat": 50, "lon":0},
-            "zoom":2,
-            "minzoom":2,
+            "zoom":3,
+            "minzoom":3,
             "maxzoom":7
         },
         "showlegend": False,
