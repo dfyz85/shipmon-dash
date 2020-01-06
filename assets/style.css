@@ -110,6 +110,16 @@ nav-link a:hover{
 .shadow {
   box-shadow: 0 .15rem 1.75rem 0 rgba(58,59,69,.15) !important;
 }
+.nav-ridings-right{
+  float: right;
+  margin-top: 5px;
+}
+/* For Data-Table pagination center align */
+.previous-next-container{
+  justify-content: center !important;
+  display: flex !important;
+  float: none !important;
+}
 
 /* PC Browser */
 @media (min-width: 48em) {

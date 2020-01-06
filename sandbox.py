@@ -6,9 +6,8 @@ import dash_html_components as html
 import dash_daq as daq
 from dash.dependencies import Input, Output, State
 from getFromDb import getVesselsFromDB, getDFfromDB
-from tools.dashboardtools import tanks, vesselspositionScat, vesselspositionMapbox
+from tools.dashboardtools import tanks, vesselspositionScat, vesselspositionMapbox, getVesselsStatistiks, htmlVesselsStatistiks
 
-dfVessels  = getDFfromDB()#'local'
 #external_stylesheets = [dbc.themes.BOOTSTRAP]
 app = dash.Dash(
     __name__,
@@ -45,16 +44,27 @@ sidebar_header = dbc.Row(
  )
 
 vesselsName = getVesselsFromDB()#'local'
-vesselsNameLink = dcc.Dropdown( 
-    id="navbar-vessel-name",
-    options=[
-        {'label': f"{vesselsName[x]['label']}", 'value': f"{vesselsName[x]['value']},{vesselsName[x]['label']}"} for x in range(len(vesselsName))
-    ],
-    value='',
-    placeholder="Select vessel.",
-    className='m-0',
-    style={'color':'black'}
-  )
+vesselsNameLink = html.Div(
+    [
+        html.Label('Vessel filter'),
+        dcc.Dropdown( 
+            id="navbar-vessel-name",
+            options=[
+                {'label': f"{vesselsName[x]['label']}", 'value': f"{vesselsName[x]['value']},{vesselsName[x]['label']}"} for x in range(len(vesselsName))
+            ],
+            value='',
+            placeholder="Select vessel.",
+            className='m-0',
+            style={'color':'black'}
+        )
+    ]
+ )
+dfVessels  = getDFfromDB()#'local'
+vesselsStatistiks = html.Div(
+    htmlVesselsStatistiks(getVesselsStatistiks(dfVessels)),
+    className='pt-2',
+    id="blurb",
+ )
 #veseelsCharterLink = dcc.Dropdown(style={'color':'black'})
 #veseelsGroupLink = dcc.Dropdown(style={'color':'black'})
 sidebar = html.Div(
@@ -62,17 +72,6 @@ sidebar = html.Div(
         sidebar_header,
         # we wrap the horizontal rule and short blurb in a div that can be
         # hidden on a small screen
-        html.Div(
-            [
-                html.Hr(),
-                html.P(
-                    "A responsive sidebar layout with collapsible navigation "
-                    "links.",
-                    className="lead",
-                ),
-            ],
-            id="blurb",
-        ),
         # use the Collapse component to animate hiding / revealing links
         dbc.Collapse(
             dbc.Nav(
@@ -81,8 +80,8 @@ sidebar = html.Div(
                     # veseelsGroupLink,
                     # html.P('Charter filter'),
                     # veseelsCharterLink,
-                     html.P('Vessel filter'),
                     vesselsNameLink,
+                    vesselsStatistiks,
                 ],
                 vertical=True,
                 pills=True,
@@ -121,6 +120,7 @@ vesselsPositionMap = dbc.Container(
                             config={"displayModeBar": False, "scrollZoom": False},
                             ),  
                         ],
+                    #style = {'display': 'inline-block', 'height': '100%'}
                     ),
                     className = "p-0"
                 )

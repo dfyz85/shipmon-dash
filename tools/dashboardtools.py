@@ -1,7 +1,10 @@
 import dash_daq as daq
 import dash_bootstrap_components as dbc
+import dash_html_components as html
 import plotly.graph_objs as go
+import json
 import pandas
+from shapely.geometry import shape, Point
 
 from getFromDb import getDFfromDB
 
@@ -69,7 +72,7 @@ def vesselspositionScat(df):
             "landcolor": 'rgb(243,243,243)',
             "countrycolor": 'rgb(204,204,204)',
             "lonaxis": { 'range': [-20, 40] },
-            "lataxis": { 'range': [32, 67] }
+            "lataxis": { 'range': [35, 68] }
         }
      }
     figure={"data": map_data, "layout": map_layout}
@@ -129,7 +132,37 @@ def vesselspositionMapbox(df,vessel='deafult'):
                         'color':'red'                   
                     },
                 ))
-        map_layout_mapbox['mapbox']['center'] = {'lat':int(float(dff['lat'].values[0])), 'lon':int(float(dff['lon'].values[0]))}
+        map_layout_mapbox['mapbox']['center'] = {'lat':int(float(dff['lat'].values[0])-5), 'lon':int(float(dff['lon'].values[0]))}
     figure={"data": map_data_mapbox, "layout": map_layout_mapbox}
     return figure
-    
+def getVesselsStatistiks(df):
+    with open('geodata/ECA-EU.geojson') as f:
+        js1 = json.load(f)
+    with open('geodata/ECA-US.geojson') as f:
+        js2 = json.load(f)
+    js = [js1,js2]
+    vessels = df
+    eca = 0
+    vesselsTotal = len(vessels.index)
+    for x in range(len(vessels.index)):
+        point = Point(float(vessels['lon'][x]), float(vessels['lat'][x]))
+        for i in js:
+            for feature in i['features']:
+                polygon = shape(feature['geometry'])
+                if polygon.contains(point):
+                    eca = eca + 1
+    return {
+        'eca': eca,
+        'vesselsTotal':vesselsTotal
+    }
+def htmlVesselsStatistiks(value):
+    return html.Div([
+        html.Div([
+                    html.Span("Total vessels:"),
+                    html.Span(value['vesselsTotal'], className="badge badge-info nav-ridings-right")
+                ]),
+        html.Div([
+                    html.Span("Vessels insede ECA zone:"),
+                    html.Span(value['eca'], className="badge badge-info nav-ridings-right")
+                ])
+     ])
