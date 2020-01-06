@@ -99,7 +99,7 @@ def getVesselsPointsDBLocal():
           "vesselName":{"$first":"$vesselName"}
         } 
     },
-    {"$sort":SON([("vesselName", 1)])}
+    {"$sort":SON([("count", 1)])}
   ]
   db = shipsPossitionLocal.aggregate(pipeline)
   df = pd.DataFrame(list(db))
@@ -110,5 +110,5 @@ def getVesselsPointsDBLocal():
 #for i in x.columns:
   #print(i)
 
-#x = getDFfromDB('local')
+#x = getDFfromDB()
 #print(x.loc[x.name.str.contains('BBC LIMA'),['name','lat','lon']])
