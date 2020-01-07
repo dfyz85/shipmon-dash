@@ -1,9 +1,11 @@
 import dash_daq as daq
 import dash_bootstrap_components as dbc
+import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objs as go
 import json
-import pandas
+import pandas as pd
+import numpy as np
 from shapely.geometry import shape, Point
 
 from getFromDb import getDFfromDB
@@ -81,11 +83,13 @@ def vesselspositionScat(df):
 def vesselspositionMapbox(df,vessel='deafult'):
     MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoiZGZ5ejg1IiwiYSI6ImNrMjV5YnlpZTBnNDIzbmt4a3A3OW9qbDYifQ.fmYKw9jhF5XKNnUh8nkyAA"
     MAPBOX_STYLE = "mapbox://styles/dfyz85/ck25zcdt704wp1cn4otpx4hwt"
+    vesselNamess = df['name']
+    latss = df['lat']
+    lonss = df['lon']
     map_data_mapbox = [go.Scattermapbox(
-                    lat=df['lat'],
-                    lon=df['lon'],
-                    text=df['name'],
-                    hoverinfo="text+lon+lat",
+                    lat=latss,
+                    lon=lonss,
+                    text=vesselNamess,
                     mode="markers+text",
                     opacity=1,
                     textposition='top center',
@@ -95,15 +99,25 @@ def vesselspositionMapbox(df,vessel='deafult'):
                     },
                     marker={
                         'size': 6,
-                        'color':'#228B22'                  
+                        'color':'#228B22',
                     },
-                ) ]
-    
+                    hovertemplate =[(
+                        "<b>Name:{} </b><br><br>" +
+                        "POSITION<br>"+
+                        "longitude:{}<br>" +
+                        "latitude:{}<br>"+
+                        "status:{}  <br>"+
+                        "speed:{} <br>"+
+                        "course:{} <br>"+
+                        "trip: {} - {} <br>"+
+                        "ETA(approximately): {}<br>"+
+                        "<extra></extra>").format(vesselName,lat,lon,status,speed,course,departure,arrival,eta) for vesselName,lat,lon,status,speed,course,departure,arrival,eta in zip(vesselNamess,latss,lonss,df['status'],df['speed'],df['course'],df['departure'],df['arrival'],df['eta'])]
+     )]
     map_layout_mapbox = {
         "mapbox": {
             "accesstoken": MAPBOX_ACCESS_TOKEN,
             "style": MAPBOX_STYLE,
-            "center": {"lat": 50, "lon":0},
+            "center": {"lat": 50, "lon":10},
             "zoom":3,
             "minzoom":3,
             "maxzoom":7
@@ -132,6 +146,17 @@ def vesselspositionMapbox(df,vessel='deafult'):
                         'size': 10,
                         'color':'red'                   
                     },
+                    hovertemplate =[(
+                        "<b>Name:{} </b><br><br>" +
+                        "POSITION<br>"+
+                        "longitude:{}<br>" +
+                        "latitude:{}<br>"+
+                        "status:{}  <br>"+
+                        "speed:{} <br>"+
+                        "course:{} <br>"+
+                        "trip: {} - {} <br>"+
+                        "ETA(approximately): {}<br>"+
+                        "<extra></extra>").format(vesselName,lat,lon,status,speed,course,departure,arrival,eta) for vesselName,lat,lon,status,speed,course,departure,arrival,eta in zip(dff['name'],dff['lat'],dff['lon'],dff['status'],dff['speed'],dff['course'],dff['departure'],dff['arrival'],dff['eta'])]
                 ))
         map_layout_mapbox['mapbox']['center'] = {'lat':int(float(dff['lat'].values[0])-5), 'lon':int(float(dff['lon'].values[0]))}
     figure={"data": map_data_mapbox, "layout": map_layout_mapbox}
@@ -164,7 +189,7 @@ def htmlVesselsStatistiks(value):
                     html.Span(value['vesselsTotal'], className="badge badge-info nav-ridings-right")
                 ]),
         html.Div([
-                    html.Span("Vessels insede ECA zone:"),
+                    html.Span("Vessels inside ECA zone:"),
                     html.Span(value['eca'], className="badge badge-info nav-ridings-right")
                 ])
      ])

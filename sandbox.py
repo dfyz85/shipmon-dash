@@ -120,6 +120,7 @@ vesselsPositionMap = dbc.Container(
                             config={"displayModeBar": False, "scrollZoom": False},
                             ),  
                         ],
+                    style={'margin-left': '0px','margin-top':'-10px'}
                     #style = {'display': 'inline-block', 'height': '100%'}
                     ),
                     className = "p-0"
@@ -130,33 +131,36 @@ vesselsPositionMap = dbc.Container(
 content = html.Div(
     [
         dbc.Row(vesselNameContent),
-        dbc.Tabs(
-            [
-                dbc.Tab(
-                    [
-                        dbc.Container(
-                        [
-                            dbc.Row(vesselsPositionMap),
-                        ],
-                        fluid=True)
-                    ],
-                    label="Map"),
-                dbc.Tab(
-                    [
-                        dbc.Container(
-                        [
-                            dbc.Row([tankHFO,tankMGO,tankFwater,tankSewageBilge]),
-                            dbc.Row([])
-                        ],
-                        fluid=True)
-                    ],
-                    label="Engine room",
-                ),
-                dbc.Tab(label="Wekly report")
-            ]
-        ),
+        vesselsPositionMap
+        # dbc.Tabs(
+        #     [
+        #         dbc.Tab(
+        #             [
+        #                 dbc.Container(
+        #                 [
+        #                     dbc.Row(vesselsPositionMap),
+        #                 ],
+        #                 fluid=True)
+        #             ],
+        #             label="Map"),
+        #         dbc.Tab(
+        #             [
+        #                 dbc.Container(
+        #                 [
+        #                     dbc.Row([tankHFO,tankMGO,tankFwater,tankSewageBilge]),
+        #                     dbc.Row([])
+        #                 ],
+        #                 fluid=True)
+        #             ],
+        #             label="Engine room",
+        #         ),
+        #         dbc.Tab(label="Wekly report")
+        #     ]
+        # ),
     ],
-    id="page-content")
+    id="page-content",
+    #style={'padding-right': '1px'}
+)
 app.layout = html.Div(
     [
         dcc.Store(
@@ -179,16 +183,19 @@ def toggle_collapse(n, is_open):
     return is_open
 
 @app.callback([Output('vessel-name-content','children'),
-              Output('world-map-mapbox','figure')],
+              Output('world-map-mapbox','figure'),
+              Output('store-data','data')],
               [Input('navbar-vessel-name', 'value')],
               [State('store-data','data')])
 def display_label(value,data):
     if value:
         df = pd.DataFrame(data['vessels-position'])
         #vesselPosition = df.loc[df['name'].str.contains(value.split(',')[1])]
-        return str(f"MV {value.split(',')[1]}"), vesselspositionMapbox(df,value)
-    else: 
-        return 'FLEET', vesselspositionMapbox(data['vessels-position'])
+        return str(f"MV {value.split(',')[1]}"), vesselspositionMapbox(df,value), data
+    else:
+        data['vessels-position'] = dict(getDFfromDB())
+        return 'FLEET', vesselspositionMapbox(data['vessels-position']), data
+        #return 'FLEET', vesselspositionMapbox(data['vessels-position'])
 
 if __name__ == "__main__":
     app.run_server(debug=False,port=8080,host="0.0.0.0")

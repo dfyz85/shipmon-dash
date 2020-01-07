@@ -43,7 +43,14 @@ def getDFfromDB(server='cloud'):
       "recordTime": { "$last": "$reordingTime" } , 
       "lat":{"$first":"$posittionLat"},
       "lon":{"$first":"$posittionLon"},
-      "name":{"$first":"$vesselName"}
+      "name":{"$first":"$vesselName"},
+      "status":{"$first":"$status"},
+      "speed":{"$first":"$speed"},
+      "course":{"$first":"$course"},
+      "departure":{"$first":"$departure"},
+      "arrival":{"$first":"$arrival"},
+      "eta":{"$first":"$eta"},
+      "draught":{"$first":"$draught"}
       }
     },
     {"$lookup": {
