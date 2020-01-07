@@ -56,8 +56,8 @@
   #vessel-name-content-div {
     margin-top: -32px;
     margin-bottom: 10px;
-    margin-left: -1px;
-    margin-right: -1px;
+    /* margin-left: -1px; 
+    margin-right: -1px; */
     color:white;
     background-color:#212121;
     max-width: initial;
@@ -97,6 +97,7 @@
 }
 
 #page-content {
+  background-color: #212121;
   padding: 2rem 1rem;
 }
 
@@ -161,6 +162,9 @@ nav-link a:hover{
     height: 50px;
     margin-top: -40px;
     margin-left: -10px;
+  }
+  #world-map-wrapper-mapbox{
+    margin-bottom: -35px;
   }
 }
 /* SIDEBAR*/
