@@ -80,7 +80,6 @@ sidebar = html.Div(
                     # veseelsGroupLink,
                     # html.P('Charter filter'),
                     # veseelsCharterLink,
-                    vesselsNameLink,
                     vesselsStatistiks,
                 ],
                 vertical=True,
@@ -93,13 +92,31 @@ sidebar = html.Div(
  )
 
 #CONTENT
-vesselNameContent = dbc.Col(
-    dbc.Label(
-        'FLEET',
-         id='vessel-name-content'
+# vesselNameContent = dbc.Col(
+#     dbc.Label(
+#         'FLEET',
+#          id='vessel-name-content'
+#     ),
+#     className='col-sm-12 label-background-grey',
+#     id='vessel-name-content-div'
+#  )
+vesselsNameLink = dbc.Row(
+    dbc.Col(
+        [
+            dcc.Dropdown( 
+                id="navbar-vessel-name",
+                options=[
+                    {'label': f"{vesselsName[x]['label']}", 'value': f"{vesselsName[x]['value']},{vesselsName[x]['label']}"} for x in range(len(vesselsName))
+                ],
+                value='',
+                placeholder="Select vessel.",
+                #className='m-0',
+                #style={'color':'black'}
+            )
+        ],
+        className="dash-black p-0 pr-1"
     ),
-    className='col-sm-12 label-background-grey',
-    id='vessel-name-content-div'
+    className="m-0 py-1"
  )
 tankHFO = tanks(180,'HFO','tons','black',110)
 tankMGO = tanks(100,'MGO','tons','#ef647c',50)
@@ -131,7 +148,7 @@ vesselsPositionMap = dbc.Container(
         className = "p-0")
 content = html.Div(
     [
-        dbc.Row(vesselNameContent, className="m-0"),
+        vesselsNameLink,
         vesselsPositionMap
         # dbc.Tabs(
         #     [
@@ -183,8 +200,7 @@ def toggle_collapse(n, is_open):
         return not is_open
     return is_open
 
-@app.callback([Output('vessel-name-content','children'),
-              Output('world-map-mapbox','figure'),
+@app.callback([Output('world-map-mapbox','figure'),
               Output('store-data','data')],
               [Input('navbar-vessel-name', 'value')],
               [State('store-data','data')])
@@ -192,10 +208,10 @@ def display_label(value,data):
     if value:
         df = pd.DataFrame(data['vessels-position'])
         #vesselPosition = df.loc[df['name'].str.contains(value.split(',')[1])]
-        return str(f"MV {value.split(',')[1]}"), vesselspositionMapbox(df,value), data
+        return vesselspositionMapbox(df,value), data
     else:
         data['vessels-position'] = dict(getDFfromDB())
-        return 'FLEET', vesselspositionMapbox(data['vessels-position']), data
+        return vesselspositionMapbox(data['vessels-position']), data
         #return 'FLEET', vesselspositionMapbox(data['vessels-position'])
 
 if __name__ == "__main__":
