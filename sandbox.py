@@ -98,7 +98,7 @@ vesselNameContent = dbc.Col(
         'FLEET',
          id='vessel-name-content'
     ),
-    className='col-sm-12 pl-2 label-background-grey',
+    className='col-sm-12 label-background-grey',
     id='vessel-name-content-div'
  )
 tankHFO = tanks(180,'HFO','tons','black',110)
@@ -120,17 +120,18 @@ vesselsPositionMap = dbc.Container(
                             config={"displayModeBar": False, "scrollZoom": False},
                             ),  
                         ],
-                    style={'margin-left': '0px','margin-top':'-10px'}
+                    #style={'margin-left': '0px','margin-top':'-10px'}
                     #style = {'display': 'inline-block', 'height': '100%'}
                     ),
-                    className = "p-0"
-                )
-            ),
+                className = "p-0"
+             ),
+            className='m-0'     
+         ),
         fluid=True,
         className = "p-0")
 content = html.Div(
     [
-        dbc.Row(vesselNameContent),
+        dbc.Row(vesselNameContent, className="m-0"),
         vesselsPositionMap
         # dbc.Tabs(
         #     [
