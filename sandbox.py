@@ -114,7 +114,7 @@ vesselsNameLink = dbc.Row(
                 #style={'color':'black'}
             )
         ],
-        className="dash-black p-0 pr-1"
+        className="dash-black px-3 pl-sm-0"
     ),
     className="m-0 py-1"
  )
