@@ -133,7 +133,7 @@ vesselsPositionMap = dbc.Container(
                         dcc.Graph(
                             className="main-wrapper",
                             id="world-map-mapbox",
-                            figure=vesselspositionMapbox(dfVessels),
+                            figure=vesselspositionMapbox(getDFfromDB()),
                             config={"displayModeBar": False, "scrollZoom": False},
                             ),  
                         ],
