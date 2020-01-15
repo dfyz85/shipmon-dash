@@ -13,9 +13,27 @@ app = dash.Dash(
     __name__,
     #external_stylesheets=external_stylesheets,
     meta_tags=[
-        {"name": "viewport", "content": "width=device-width, initial-scale=1"}
+        {"name": "viewport", "content": "width=device-width, initial-scale=1"},
+        {'name': 'description','content': 'ShipMOnitor Service for monitoring your vessels.'},
     ],
- )
+)
+app.index_string = ''' <!DOCTYPE html>
+            <html>
+                <head>
+                    {%metas%}
+                    <title> Ship Monitor</title>
+                    {%favicon%}
+                    {%css%}
+                </head>
+                <body>
+                    {%app_entry%}
+                    <footer>
+                        {%config%}
+                        {%scripts%}
+                        {%renderer%}
+                    </footer>
+                </body>
+            </html> '''
 server = app.server #For Digital ocean
 mapOffLine = 'http://localhost/assets/'
 #SIDEBAR
