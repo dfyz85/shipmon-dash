@@ -202,7 +202,7 @@ def serve_layout():
     [
         dcc.Store(
             id = 'store-data',
-            data = {'vessels-position': dict(dfVessels) }
+            data = {'vessels-position': dict(getDFfromDB()) }
          ),
         sidebar, 
         content
