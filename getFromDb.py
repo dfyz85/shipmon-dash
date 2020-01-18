@@ -50,7 +50,8 @@ def getDFfromDB(server='cloud'):
       "departure":{"$first":"$departure"},
       "arrival":{"$first":"$arrival"},
       "eta":{"$first":"$eta"},
-      "draught":{"$first":"$draught"}
+      "draught":{"$first":"$draught"},
+      "time":{"$first":"$time"}
       }
     },
     {"$lookup": {

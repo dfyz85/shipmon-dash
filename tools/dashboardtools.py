@@ -103,7 +103,7 @@ def vesselspositionMapbox(df,vessel='deafult'):
                     },
                     hovertemplate =[(
                         "<b>Name:{} </b><br><br>" +
-                        "POSITION<br>"+
+                        "POSITION recived {}<br>"+
                         "longitude:{}<br>" +
                         "latitude:{}<br>"+
                         "status:{}  <br>"+
@@ -111,7 +111,7 @@ def vesselspositionMapbox(df,vessel='deafult'):
                         "course:{} <br>"+
                         "trip: {} - {} <br>"+
                         "ETA(approximately): {}<br>"+
-                        "<extra></extra>").format(vesselName,lat,lon,status,speed,course,departure,arrival,eta) for vesselName,lat,lon,status,speed,course,departure,arrival,eta in zip(vesselNamess,latss,lonss,df['status'],df['speed'],df['course'],df['departure'],df['arrival'],df['eta'])]
+                        "<extra></extra>").format(vesselName,time,lat,lon,status,speed,course,departure,arrival,eta) for vesselName,time,lat,lon,status,speed,course,departure,arrival,eta in zip(vesselNamess,df['time'],latss,lonss,df['status'],df['speed'],df['course'],df['departure'],df['arrival'],df['eta'])]
      )]
     map_layout_mapbox = {
         "mapbox": {
