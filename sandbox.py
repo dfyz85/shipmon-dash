@@ -197,7 +197,8 @@ content = html.Div(
     id="page-content",
     #style={'padding-right': '1px'}
 )
-app.layout = html.Div(
+def serve_layout():
+   return html.Div(
     [
         dcc.Store(
             id = 'store-data',
@@ -207,6 +208,7 @@ app.layout = html.Div(
         content
      ]
  )
+app.layout = serve_layout
 
 @app.callback(
     Output("collapse", "is_open"),
