@@ -103,13 +103,14 @@ def vesselspositionMapbox(df,vessel='deafult'):
                     },
                     hovertemplate =[(
                         "<b>Name:{} </b><br><br>" +
-                        "POSITION recived {}<br>"+
-                        "longitude:{}<br>" +
-                        "latitude:{}<br>"+
-                        "status:{}  <br>"+
-                        "speed:{} <br>"+
-                        "course:{} <br>"+
-                        "trip: {} - {} <br>"+
+                        "POSITION<br>"+
+                        "Did not change since {} UTC<br>"+
+                        "Longitude:{}<br>" +
+                        "Latitude:{}<br>"+
+                        "Status:{}  <br>"+
+                        "Speed:{} <br>"+
+                        "Course:{} <br>"+
+                        "Trip: {} - {} <br>"+
                         "ETA(approximately): {}<br>"+
                         "<extra></extra>").format(vesselName,time,lat,lon,status,speed,course,departure,arrival,eta) for vesselName,time,lat,lon,status,speed,course,departure,arrival,eta in zip(vesselNamess,df['time'],latss,lonss,df['status'],df['speed'],df['course'],df['departure'],df['arrival'],df['eta'])]
      )]
@@ -149,14 +150,15 @@ def vesselspositionMapbox(df,vessel='deafult'):
                     hovertemplate =[(
                         "<b>Name:{} </b><br><br>" +
                         "POSITION<br>"+
-                        "longitude:{}<br>" +
-                        "latitude:{}<br>"+
-                        "status:{}  <br>"+
-                        "speed:{} <br>"+
-                        "course:{} <br>"+
-                        "trip: {} - {} <br>"+
+                        "Did not change since {} UTC<br>"+
+                        "Longitude:{}<br>" +
+                        "Latitude:{}<br>"+
+                        "Status:{}  <br>"+
+                        "Speed:{} <br>"+
+                        "Course:{} <br>"+
+                        "Trip: {} - {} <br>"+
                         "ETA(approximately): {}<br>"+
-                        "<extra></extra>").format(vesselName,lat,lon,status,speed,course,departure,arrival,eta) for vesselName,lat,lon,status,speed,course,departure,arrival,eta in zip(dff['name'],dff['lat'],dff['lon'],dff['status'],dff['speed'],dff['course'],dff['departure'],dff['arrival'],dff['eta'])]
+                        "<extra></extra>").format(vesselName,time,lat,lon,status,speed,course,departure,arrival,eta) for vesselName,time,lat,lon,status,speed,course,departure,arrival,eta in zip(dff['name'],dff['time'],dff['lat'],dff['lon'],dff['status'],dff['speed'],dff['course'],dff['departure'],dff['arrival'],dff['eta'])]
                 ))
         map_layout_mapbox['mapbox']['center'] = {'lat':int(float(dff['lat'].values[0])-5), 'lon':int(float(dff['lon'].values[0]))}
     figure={"data": map_data_mapbox, "layout": map_layout_mapbox}
