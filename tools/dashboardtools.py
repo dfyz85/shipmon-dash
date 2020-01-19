@@ -180,18 +180,13 @@ def getVesselsStatistiks(df):
                 polygon = shape(feature['geometry'])
                 if polygon.contains(point):
                     eca = eca + 1
-    return {
-        'eca': eca,
-        'vesselsTotal':vesselsTotal
-    }
-def htmlVesselsStatistiks(value):
     return html.Div([
         html.Div([
                     html.Span("Total vessels:"),
-                    html.Span(value['vesselsTotal'], className="badge badge-info nav-ridings-right")
+                    html.Span(vesselsTotal, className="badge badge-info nav-ridings-right")
                 ]),
         html.Div([
                     html.Span("Vessels inside ECA zone:"),
-                    html.Span(value['eca'], className="badge badge-info nav-ridings-right")
+                    html.Span(eca, className="badge badge-info nav-ridings-right")
                 ])
-     ])
+     ])                

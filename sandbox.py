@@ -6,7 +6,7 @@ import dash_html_components as html
 import dash_daq as daq
 from dash.dependencies import Input, Output, State
 from getFromDb import getVesselsFromDB, getDFfromDB
-from tools.dashboardtools import tanks, vesselspositionScat, vesselspositionMapbox, getVesselsStatistiks, htmlVesselsStatistiks
+from tools.dashboardtools import tanks, vesselspositionScat, vesselspositionMapbox, getVesselsStatistiks
 
 #external_stylesheets = [dbc.themes.BOOTSTRAP]
 app = dash.Dash(
@@ -79,7 +79,7 @@ vesselsNameLink = html.Div(
  )
 dfVessels  = getDFfromDB()#'local'
 vesselsStatistiks = html.Div(
-    htmlVesselsStatistiks(getVesselsStatistiks(dfVessels)),
+    getVesselsStatistiks(dfVessels),
     className='pt-2',
     id="blurb",
  )
@@ -198,16 +198,16 @@ content = html.Div(
     #style={'padding-right': '1px'}
 )
 def serve_layout():
-   return html.Div(
-    [
-        dcc.Store(
-            id = 'store-data',
-            data = {'vessels-position': dict(getDFfromDB()) }
-         ),
-        sidebar, 
-        content
-     ]
- )
+    return html.Div(
+        [
+            dcc.Store(
+                id = 'store-data',
+                data = {'vessels-position': []}
+            ),     
+            sidebar, 
+            content
+        ]
+    )
 app.layout = serve_layout
 
 @app.callback(
@@ -230,8 +230,9 @@ def display_label(value,data):
         #vesselPosition = df.loc[df['name'].str.contains(value.split(',')[1])]
         return vesselspositionMapbox(df,value), data
     else:
-        data['vessels-position'] = dict(getDFfromDB())
-        return vesselspositionMapbox(data['vessels-position']), data
+        dfVessels  = getDFfromDB()
+        data['vessels-position'] = dict(dfVessels)
+        return vesselspositionMapbox(dfVessels), data
         #return 'FLEET', vesselspositionMapbox(data['vessels-position'])
 
 if __name__ == "__main__":
