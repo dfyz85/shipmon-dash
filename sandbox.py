@@ -37,78 +37,9 @@ app.index_string = ''' <!DOCTYPE html>
 server = app.server #For Digital ocean
 mapOffLine = 'http://localhost/assets/'
 #SIDEBAR
-sidebar_header = dbc.Row(
-    [
-        dbc.Col(html.Img(src='/assets/logo.gif', id='brand-logo')),
-        dbc.Col(
-            html.Button(
-                # use the Bootstrap navbar-toggler classes to style the toggle
-                html.Span(className="navbar-toggler-icon"),
-                className="navbar-toggler",
-                # the navbar-toggler classes don't set color, so we do it here
-                style={
-                    "color": "white",
-                    "border-color": "white",
-                },
-                id="toggle",
-            ),
-            # the column containing the toggle will be only as wide as the
-            # toggle, resulting in the toggle being right aligned
-            width="auto",
-            # vertically align the toggle in the center
-            align="center",
-        ),
-    ]
- )
-
-vesselsName = getVesselsFromDB()#'local'
-vesselsNameLink = html.Div(
-    [
-        html.Label('Vessel filter'),
-        dcc.Dropdown( 
-            id="navbar-vessel-name",
-            options=[
-                {'label': f"{vesselsName[x]['label']}", 'value': f"{vesselsName[x]['value']},{vesselsName[x]['label']}"} for x in range(len(vesselsName))
-            ],
-            value='',
-            placeholder="Select vessel.",
-            className='m-0',
-            style={'color':'black'}
-        )
-    ]
- )
-dfVessels  = getDFfromDB()#'local'
-vesselsStatistiks = html.Div(
-    getVesselsStatistiks(dfVessels),
-    className='pt-2',
-    id="blurb",
- )
+#'local' 
 #veseelsCharterLink = dcc.Dropdown(style={'color':'black'})
 #veseelsGroupLink = dcc.Dropdown(style={'color':'black'})
-sidebar = html.Div(
-    [
-        sidebar_header,
-        # we wrap the horizontal rule and short blurb in a div that can be
-        # hidden on a small screen
-        # use the Collapse component to animate hiding / revealing links
-        dbc.Collapse(
-            dbc.Nav(
-                [
-                    # html.P('Group filter'),
-                    # veseelsGroupLink,
-                    # html.P('Charter filter'),
-                    # veseelsCharterLink,
-                    vesselsStatistiks,
-                ],
-                vertical=True,
-                pills=True,
-            ),
-            id="collapse",
-        ),
-    ],
-    id="sidebar",
- )
-
 #CONTENT
 # vesselNameContent = dbc.Col(
 #     dbc.Label(
@@ -118,31 +49,63 @@ sidebar = html.Div(
 #     className='col-sm-12 label-background-grey',
 #     id='vessel-name-content-div'
 #  )
-vesselsNameLink = dbc.Row(
-    dbc.Col(
-        [
-            dcc.Dropdown( 
-                id="navbar-vessel-name",
-                options=[
-                    {'label': f"{vesselsName[x]['label']}", 'value': f"{vesselsName[x]['value']},{vesselsName[x]['label']}"} for x in range(len(vesselsName))
-                ],
-                value='',
-                placeholder="Select vessel.",
-                #className='m-0',
-                #style={'color':'black'}
-            )
-        ],
-        className="dash-black px-3 pl-sm-0"
-    ),
-    className="m-0 py-1"
- )
 tankHFO = tanks(180,'HFO','tons','black',110)
 tankMGO = tanks(100,'MGO','tons','#ef647c',50)
 tankFwater = tanks(150,'Fresh Water','tons','blue',70)
 tankSewageBilge = tanks(80,'Sewage','tons','brown',5)
 #tempME 
 #Vessels MAP-BOX
-vesselsPositionMap = dbc.Container(
+
+def serve_layout():
+    dfVessels  = getDFfromDB()#'local'
+    vesselsName = getVesselsFromDB()
+    sidebar_header = dbc.Row(
+        [
+            dbc.Col(html.Img(src='/assets/logo.gif', id='brand-logo')),
+            dbc.Col(
+                html.Button(
+                    # use the Bootstrap navbar-toggler classes to style the toggle
+                    html.Span(className="navbar-toggler-icon"),
+                    className="navbar-toggler",
+                    # the navbar-toggler classes don't set color, so we do it here
+                    style={
+                        "color": "white",
+                        "border-color": "white",
+                    },
+                    id="toggle",
+                ),
+                # the column containing the toggle will be only as wide as the
+                # toggle, resulting in the toggle being right aligned
+                width="auto",
+                # vertically align the toggle in the center
+                align="center",
+            ),
+        ]
+     )
+    vesselsNameLink = dbc.Row(
+        dbc.Col(
+            [
+                dcc.Dropdown( 
+                    id="navbar-vessel-name",
+                    options=[
+                        {'label': f"{vesselsName[x]['label']}", 'value': f"{vesselsName[x]['value']},{vesselsName[x]['label']}"} for x in range(len(vesselsName))
+                    ],
+                    value='',
+                    placeholder="Select vessel.",
+                    #className='m-0',
+                    #style={'color':'black'}
+                )
+            ],
+            className="dash-black px-3 pl-sm-0"
+        ),
+        className="m-0 py-1"
+     )
+    vesselsStatistiks = html.Div(
+        getVesselsStatistiks(dfVessels),
+        className='pt-2',
+        id="blurb",
+     )
+    vesselsPositionMap = dbc.Container(
         dbc.Row(
             dbc.Col(
                 html.Div(
@@ -151,7 +114,7 @@ vesselsPositionMap = dbc.Container(
                         dcc.Graph(
                             className="main-wrapper",
                             id="world-map-mapbox",
-                            figure=vesselspositionMapbox(getDFfromDB()),
+                            figure=vesselspositionMapbox(dfVessels),
                             config={"displayModeBar": False, "scrollZoom": False},
                             ),  
                         ],
@@ -164,50 +127,72 @@ vesselsPositionMap = dbc.Container(
          ),
         fluid=True,
         className = "p-0")
-content = html.Div(
-    [
-        vesselsNameLink,
-        vesselsPositionMap
-        # dbc.Tabs(
-        #     [
-        #         dbc.Tab(
-        #             [
-        #                 dbc.Container(
-        #                 [
-        #                     dbc.Row(vesselsPositionMap),
-        #                 ],
-        #                 fluid=True)
-        #             ],
-        #             label="Map"),
-        #         dbc.Tab(
-        #             [
-        #                 dbc.Container(
-        #                 [
-        #                     dbc.Row([tankHFO,tankMGO,tankFwater,tankSewageBilge]),
-        #                     dbc.Row([])
-        #                 ],
-        #                 fluid=True)
-        #             ],
-        #             label="Engine room",
-        #         ),
-        #         dbc.Tab(label="Wekly report")
-        #     ]
-        # ),
-    ],
-    id="page-content",
-    #style={'padding-right': '1px'}
-)
-def serve_layout():
+    sidebar = html.Div(
+        [
+            sidebar_header,
+            # we wrap the horizontal rule and short blurb in a div that can be
+            # hidden on a small screen
+            # use the Collapse component to animate hiding / revealing links
+            dbc.Collapse(
+                dbc.Nav(
+                    [
+                        # html.P('Group filter'),
+                        # veseelsGroupLink,
+                        # html.P('Charter filter'),
+                        # veseelsCharterLink,
+                        vesselsStatistiks,
+                    ],
+                    vertical=True,
+                    pills=True,
+                ),
+                id="collapse",
+            ),
+        ],
+        id="sidebar",
+     )
+    content = html.Div(
+        [
+            vesselsNameLink,
+            vesselsPositionMap
+            # dbc.Tabs(
+            #     [
+            #         dbc.Tab(
+            #             [
+            #                 dbc.Container(
+            #                 [
+            #                     dbc.Row(vesselsPositionMap),
+            #                 ],
+            #                 fluid=True)
+            #             ],
+            #             label="Map"),
+            #         dbc.Tab(
+            #             [
+            #                 dbc.Container(
+            #                 [
+            #                     dbc.Row([tankHFO,tankMGO,tankFwater,tankSewageBilge]),
+            #                     dbc.Row([])
+            #                 ],
+            #                 fluid=True)
+            #             ],
+            #             label="Engine room",
+            #         ),
+            #         dbc.Tab(label="Wekly report")
+            #     ]
+            # ),
+        ],
+        id="page-content",
+        #style={'padding-right': '1px'}
+     )
     return html.Div(
         [
             dcc.Store(
                 id = 'store-data',
-                data = {'vessels-position': []}
+                data = {'vessels-position': dict(dfVessels)}
             ),     
             sidebar, 
             content
         ]
-    )
+     )
 app.layout = serve_layout
 
 @app.callback(
@@ -220,19 +205,16 @@ def toggle_collapse(n, is_open):
         return not is_open
     return is_open
 
-@app.callback([Output('world-map-mapbox','figure'),
-              Output('store-data','data')],
+@app.callback(Output('world-map-mapbox','figure'),
               [Input('navbar-vessel-name', 'value')],
               [State('store-data','data')])
 def display_label(value,data):
+    df = pd.DataFrame(data['vessels-position'])
     if value:
-        df = pd.DataFrame(data['vessels-position'])
         #vesselPosition = df.loc[df['name'].str.contains(value.split(',')[1])]
-        return vesselspositionMapbox(df,value), data
+        return vesselspositionMapbox(df,value)
     else:
-        dfVessels  = getDFfromDB()
-        data['vessels-position'] = dict(dfVessels)
-        return vesselspositionMapbox(dfVessels), data
+        return vesselspositionMapbox(df)
         #return 'FLEET', vesselspositionMapbox(data['vessels-position'])
 
 if __name__ == "__main__":
