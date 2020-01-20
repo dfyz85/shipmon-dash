@@ -104,7 +104,7 @@ def vesselspositionMapbox(df,vessel='deafult'):
                     hovertemplate =[(
                         "<b>Name:{} </b><br><br>" +
                         "POSITION<br>"+
-                        "Did not change since {} UTC<br>"+
+                        "Last update {} UTC<br>"+
                         "Longitude:{}<br>" +
                         "Latitude:{}<br>"+
                         "Status:{}  <br>"+
@@ -150,7 +150,7 @@ def vesselspositionMapbox(df,vessel='deafult'):
                     hovertemplate =[(
                         "<b>Name:{} </b><br><br>" +
                         "POSITION<br>"+
-                        "Did not change since {} UTC<br>"+
+                        "Last update {} UTC<br>"+
                         "Longitude:{}<br>" +
                         "Latitude:{}<br>"+
                         "Status:{}  <br>"+
