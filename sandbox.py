@@ -1,5 +1,6 @@
 import pandas as pd
 import dash
+from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
@@ -105,6 +106,7 @@ def serve_layout():
         className='pt-2',
         id="blurb",
      )
+    vesselsMenu = dbc.Button("Vessel menu", id="vessel-menu", color="primary", block=True, className='my-2',n_clicks=0)
     vesselsPositionMap = dbc.Container(
         dbc.Row(
             dbc.Col(
@@ -141,6 +143,7 @@ def serve_layout():
                         # html.P('Charter filter'),
                         # veseelsCharterLink,
                         vesselsStatistiks,
+                        vesselsMenu
                     ],
                     vertical=True,
                     pills=True,
@@ -185,6 +188,7 @@ def serve_layout():
      )
     return html.Div(
         [
+            dcc.Location(id='url', refresh=False),
             dcc.Store(
                 id = 'store-data',
                 data = {'vessels-position': dict(dfVessels)}
@@ -217,5 +221,22 @@ def display_label(value,data):
         return vesselspositionMapbox(df)
         #return 'FLEET', vesselspositionMapbox(data['vessels-position'])
 
+@app.callback(Output('world-map-wrapper-mapbox', 'children'),
+              [Input('vessel-menu', 'n_clicks')],
+              [State('store-data','data')])
+def display_page(n,data):
+    if n%2:
+        return html.H3("you on VESSEL MENU")
+    elif n:
+        df = pd.DataFrame(data['vessels-position'])
+        return dcc.Graph(
+                    className="main-wrapper",
+                    id="world-map-mapbox",
+                    figure=vesselspositionMapbox(df),
+                    config={"displayModeBar": False, "scrollZoom": False},
+                ),
+    else:
+        raise PreventUpdate
+    
 if __name__ == "__main__":
     app.run_server(debug=False,port=8080,host="0.0.0.0")
