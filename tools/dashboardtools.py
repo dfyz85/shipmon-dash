@@ -172,7 +172,26 @@ def getVesselsStatistiks(df):
     js = [js1,js2]
     vessels = df
     eca = 0
+    divContent = []
     vesselsTotal = len(vessels.index)
+    divContent.append(
+         html.Div([
+                    html.Span("Total vessels:"),
+                    html.Span(vesselsTotal, className="badge badge-info nav-ridings-right"),
+                    html.Hr(style={
+                        'border-top':'1px solid white',
+                        'margin-top': '0.5rem',
+                        'margin-bottom': '0.5rem'
+                    })
+                ]))
+    countStatus = df.groupby('status').name.nunique().to_dict()
+    for i in countStatus:
+        divContent.append(
+            html.Div([
+                    html.Span(f'{i} :'),
+                    html.Span(countStatus[i], className="badge badge-info nav-ridings-right")
+                ])
+        )
     for x in range(len(vessels.index)):
         point = Point(float(vessels['lon'][x]), float(vessels['lat'][x]))
         for i in js:
@@ -180,13 +199,15 @@ def getVesselsStatistiks(df):
                 polygon = shape(feature['geometry'])
                 if polygon.contains(point):
                     eca = eca + 1
-    return html.Div([
-        html.Div([
-                    html.Span("Total vessels:"),
-                    html.Span(vesselsTotal, className="badge badge-info nav-ridings-right")
-                ]),
-        html.Div([
+    
+    divContent.append(
+         html.Div([
+                    html.Hr(style={
+                        'border-top':'1px solid white',
+                        'margin-top': '0.5rem',
+                        'margin-bottom': '0.5rem'}),
                     html.Span("Vessels inside ECA zone:"),
                     html.Span(eca, className="badge badge-info nav-ridings-right")
-                ])
-     ])                
+                ]))
+
+    return html.Div(divContent)                

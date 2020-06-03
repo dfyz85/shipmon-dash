@@ -6,7 +6,8 @@ from bson.son import SON
 
 client = pymongo.MongoClient("mongodb://dfyz:rtyfghvbn65@briese-shard-00-00-vryeg.mongodb.net:27017,briese-shard-00-01-vryeg.mongodb.net:27017,briese-shard-00-02-vryeg.mongodb.net:27017/test?ssl=true&replicaSet=briese-shard-0&authSource=admin&retryWrites=true&w=majority")
 brieseDb = client['shipsBriese']
-shipsPossition = brieseDb['shipsPosition'] 
+shipsPossition = brieseDb['shipsPositionNow'] 
+#shipsPossition = brieseDb['shipsPosition'] 
 vesselsName = brieseDb['shipsData']
 
 try:
@@ -36,6 +37,37 @@ def getVesselsFromDB(server='cloud'):
   return(list(db))
 
 def getDFfromDB(server='cloud'):
+  # pipeline = [
+  #   {"$sort": SON([("reordingTime", -1)])},
+  #   {"$group": {
+  #     "_id": "$imo",
+  #     "recordTime": { "$last": "$reordingTime" } , 
+  #     "lat":{"$first":"$posittionLat"},
+  #     "lon":{"$first":"$posittionLon"},
+  #     "name":{"$first":"$vesselName"},
+  #     "status":{"$first":"$status"},
+  #     "speed":{"$first":"$speed"},
+  #     "course":{"$first":"$course"},
+  #     "departure":{"$first":"$departure"},
+  #     "arrival":{"$first":"$arrival"},
+  #     "eta":{"$first":"$eta"},
+  #     "draught":{"$first":"$draught"},
+  #     "time":{"$first":"$time"}
+  #     }
+  #   },
+  #   {"$lookup": {
+  #         "from": "shipsData",
+  #         "localField": "_id",   
+  #         "foreignField": "imo", 
+  #         "as": "fromShipsData"
+  #       }
+  #   },
+  #   {
+  #       "$replaceRoot": { "newRoot": { "$mergeObjects": [ { "$arrayElemAt": [ "$fromShipsData", 0 ] }, "$$ROOT" ] } }
+  #   },
+  #   { "$project": { "fromShipsData": 0 }
+  #   }
+  # ]
   pipeline = [
     {"$sort": SON([("reordingTime", -1)])},
     {"$group": {
@@ -53,18 +85,6 @@ def getDFfromDB(server='cloud'):
       "draught":{"$first":"$draught"},
       "time":{"$first":"$time"}
       }
-    },
-    {"$lookup": {
-          "from": "shipsData",
-          "localField": "_id",   
-          "foreignField": "imo", 
-          "as": "fromShipsData"
-        }
-    },
-    {
-        "$replaceRoot": { "newRoot": { "$mergeObjects": [ { "$arrayElemAt": [ "$fromShipsData", 0 ] }, "$$ROOT" ] } }
-    },
-    { "$project": { "fromShipsData": 0 }
     }
   ]
   if server == 'cloud':

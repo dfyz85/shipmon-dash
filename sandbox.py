@@ -106,7 +106,7 @@ def serve_layout():
         className='pt-2',
         id="blurb",
      )
-    vesselsMenu = dbc.Button("Vessel menu", id="vessel-menu", color="primary", block=True, className='my-2',n_clicks=0)
+    vesselsMenu = dbc.Button("Vessel menu", id="vessel-menu", color="primary", block=True, className='my-2',n_clicks=0,style={'visibility':'hidden'})
     vesselsPositionMap = dbc.Container(
         dbc.Row(
             dbc.Col(
@@ -226,7 +226,7 @@ def display_label(value,data):
               [State('store-data','data')])
 def display_page(n,data):
     if n%2:
-        return html.H3("you on VESSEL MENU")
+        return html.H3("You on VESSEL MENU")
     elif n:
         df = pd.DataFrame(data['vessels-position'])
         return dcc.Graph(
