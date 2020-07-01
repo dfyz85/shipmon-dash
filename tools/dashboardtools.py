@@ -110,7 +110,8 @@ def vesselspositionMapbox(df,vessel='deafult'):
                         "Status:{}  <br>"+
                         "Speed:{} <br>"+
                         "Course:{} <br>"+
-                        "Trip: {} - {} <br>"+
+                        "Trip from: {} <br>"+
+                        "Trip to: {} <br>"+
                         "ETA(approximately): {}<br>"+
                         "<extra></extra>").format(vesselName,time,lat,lon,status,speed,course,departure,arrival,eta) for vesselName,time,lat,lon,status,speed,course,departure,arrival,eta in zip(vesselNamess,df['time'],latss,lonss,df['status'],df['speed'],df['course'],df['departure'],df['arrival'],df['eta'])]
      )]
@@ -156,7 +157,8 @@ def vesselspositionMapbox(df,vessel='deafult'):
                         "Status:{}  <br>"+
                         "Speed:{} <br>"+
                         "Course:{} <br>"+
-                        "Trip: {} - {} <br>"+
+                        "Trip from: {} <br>"+
+                        "Trip to:   {} <br>"+
                         "ETA(approximately): {}<br>"+
                         "<extra></extra>").format(vesselName,time,lat,lon,status,speed,course,departure,arrival,eta) for vesselName,time,lat,lon,status,speed,course,departure,arrival,eta in zip(dff['name'],dff['time'],dff['lat'],dff['lon'],dff['status'],dff['speed'],dff['course'],dff['departure'],dff['arrival'],dff['eta'])]
                 ))
