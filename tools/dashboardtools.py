@@ -213,3 +213,6 @@ def getVesselsStatistiks(df):
                 ]))
 
     return html.Div(divContent)                
+
+def vesselsShedule():
+    pass
