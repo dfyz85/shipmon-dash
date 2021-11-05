@@ -37,7 +37,7 @@ app.index_string = ''' <!DOCTYPE html>
             </html> '''
 server = app.server #For Digital ocean
 mapOffLine = 'http://localhost/assets/'
-#SIDEBAR
+#SIDEBARs
 #'local' 
 #veseelsCharterLink = dcc.Dropdown(style={'color':'black'})
 #veseelsGroupLink = dcc.Dropdown(style={'color':'black'})
