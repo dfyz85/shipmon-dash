@@ -62,7 +62,7 @@ def serve_layout():
     vesselsName = getVesselsFromDB()
     sidebar_header = dbc.Row(
         [
-            dbc.Col(html.Img(src='/assets/logo.gif', id='brand-logo')),
+            dbc.Col(html.Img(src='/assets/logo.gif', id='brand-logo'),className = "pr-0"),
             dbc.Col(
                 html.Button(
                     # use the Bootstrap navbar-toggler classes to style the toggle
@@ -97,7 +97,7 @@ def serve_layout():
                     #style={'color':'black'}
                 )
             ],
-            className="dash-black px-3 pl-sm-0"
+            className="dash-black px-0 pl-sm-0"
         ),
         className="m-0 py-1",
         style={'height': '7vh','min-height':'45px'}
@@ -153,6 +153,7 @@ def serve_layout():
                         # html.P('Charter filter'),
                         # veseelsCharterLink,
                         vesselsStatistiks,
+                        html.Button('Reset',id='reset-vessels', n_clicks=0),
                         vesselsMenu
                     ],
                     vertical=True,
@@ -165,33 +166,36 @@ def serve_layout():
      )
     content = html.Div(
         [
-            vesselsNameLink,
-            vesselsPositionMap
-            # dbc.Tabs(
-            #     [
-            #         dbc.Tab(
-            #             [
-            #                 dbc.Container(
-            #                 [
-            #                     dbc.Row(vesselsPositionMap),
-            #                 ],
-            #                 fluid=True)
-            #             ],
-            #             label="Map"),
-            #         dbc.Tab(
-            #             [
-            #                 dbc.Container(
-            #                 [
-            #                     dbc.Row([tankHFO,tankMGO,tankFwater,tankSewageBilge]),
-            #                     dbc.Row([])
-            #                 ],
-            #                 fluid=True)
-            #             ],
-            #             label="Engine room",
-            #         ),
-            #         dbc.Tab(label="Wekly report")
-            #     ]
-            # ),
+            #vesselsNameLink,
+            #vesselsPositionMap
+            dbc.Tabs(
+                [
+                    dbc.Tab(
+                        [
+                            dbc.Container(
+                            [
+                                vesselsNameLink,
+                                vesselsPositionMap,
+                            ],
+                            fluid=True,
+                            className='p-0',    
+                            )
+                        ],
+                        label="Map"),
+                    dbc.Tab(
+                        [
+                            dbc.Container(
+                            [
+                                dbc.Row([tankHFO,tankMGO,tankFwater,tankSewageBilge]),
+                                dbc.Row([])
+                            ],
+                            fluid=True)
+                        ],
+                        label="Shedule",
+                    ),
+                ],
+                className='m-0'
+            ),
         ],
         id="page-content",
         #style={'padding-right': '1px'}
@@ -248,6 +252,14 @@ def display_page(n,data):
                 ),
     else:
         raise PreventUpdate
-    
+
+@app.callback(
+    Output("navbar-vessel-name", "value"),
+    [Input("reset-vessels", "n_clicks")],
+)
+def reset_vessels(n_clicks):
+     return ''
+
+
 if __name__ == "__main__":
-    app.run_server(debug=False,port=8080,host="0.0.0.0")
+    app.run_server(debug=True,port=8080,host="0.0.0.0")

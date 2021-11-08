@@ -1,5 +1,6 @@
 
 /* DFYZ */
+
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;600&display=swap');
 
 *, *:before, *:after {
@@ -47,6 +48,7 @@ body{
   /* width: -webkit-fill-available;
   height: -webkit-fill-available; */
 }
+
 .loader {
     position: absolute;
     left: 50%;
@@ -89,12 +91,7 @@ body{
     background-color: lavender;
     font-size: 34px;
   }
-
-  #page-content .nav-tabs{
-    padding-left: 24px;
-    margin-left: -20px;
-    margin-right: -15px;
-  }
+  
 
   #vessel-name-content-div {
     /* margin-left: -1px; 
@@ -117,7 +114,7 @@ body{
 }
 /* SIDEBAR*/
 #sidebar {
-  text-align: center;
+  /* text-align: center; */
   padding: 1rem 1rem;
   color:white;
   background-color:#212121;
@@ -139,6 +136,7 @@ body{
 #collapse *:first-child {
   margin-top: 0rem;
 }
+
 
 #page-content {
   background-color: #212121;
@@ -167,7 +165,38 @@ nav-link a:hover{
   display: flex !important;
   float: none !important;
 }
+/* PHONE */
+@media (max-width: 48em){
+  #navbar-vessel-name{
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+  #page-content {
+    background-color:#212121;
+    text-align: center;
+    }
+  #page-content .nav{
+    background-color: gray;
+    border-color: gray;
+    border-right-width: 0px;
+    color:white;
+    margin-bottom: 4px;
+  }
+  #page-content .nav-link.active{
+    background-color:dodgerblue;
+    color: white;
+    border-radius: 1px;
+    border-color:#aaa;
+  }
+  #page-content .nav-item .nav-link:hover{
+    border-color: white;
+    border-radius: 1px;
+  }
+  #page-content .nav-tabs li:nth-child(1){
+    margin-left: 1rem;
 
+  }
+}
 /* PC Browser */
 @media (min-width: 48em) {
   ._dash-loading{
@@ -204,7 +233,6 @@ nav-link a:hover{
   #collapse *:first-child {
     margin-top: 0;
   }
-
   #brand-logo{
     height: 50px;
     margin-top: -18px;
