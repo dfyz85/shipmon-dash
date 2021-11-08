@@ -1,5 +1,52 @@
 
 /* DFYZ */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;600&display=swap');
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+body{
+  font-family:Nunito;
+  background-color: #212121;
+}
+@keyframes color-cheange{
+  0%,100% {color: #212121;}
+  50% {color: white;}
+}
+
+._dash-loading{
+  color: white;
+  font-size: 0px;
+  position: absolute;
+  left: 40%;
+  top: 50%;
+  z-index: 1;
+  width: 120px;
+  height: 120px;
+  animation-name: color-cheange;
+  animation-duration: 2s; 
+  animation-iteration-count: infinite;
+  /* margin: -76px 0 0 -76px;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite; */
+}
+._dash-loading::before {
+  font-size: 14px;
+  content: "BRIESE ";
+}
+._dash-loading::after {
+  font-size: 14px;
+  content: "CREW";
+}
+#content{
+  display: flex;
+  flex-direction: column;
+  /* width: -webkit-fill-available;
+  height: -webkit-fill-available; */
+}
 .loader {
     position: absolute;
     left: 50%;
@@ -27,14 +74,10 @@
     100% { transform: rotate(360deg); }
   }
 
-  .main-wrapper {
-    height: 100vh;
-    min-height:600px;
-  }
   .navbar-brand{
     font-family: 'Teko', sans-serif;
     background: linear-gradient(120deg, #000080 30%,  #FF0000 70%, #000000 95%);
-	  -webkit-background-clip: text;
+	  background-clip: text;
 	  -webkit-text-fill-color: transparent;
   }
 
@@ -99,6 +142,9 @@
 
 #page-content {
   background-color: #212121;
+  width: -webkit-fill-available;
+  width: -moz-available;
+  height: -webkit-fill-available;
 }
 
 /* add the three horizontal bars icon for the toggle */
@@ -124,12 +170,18 @@ nav-link a:hover{
 
 /* PC Browser */
 @media (min-width: 48em) {
+  ._dash-loading{
+    left: 45%;
+  }
+  #content{
+    flex-direction: row;
+  }
   #sidebar {
-    position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
-    width: 16rem;
+    height: 100vh;
+    /* width: 16rem; */
     text-align: left;
     color:white;
     background-color:#212121;
@@ -151,11 +203,6 @@ nav-link a:hover{
 
   #collapse *:first-child {
     margin-top: 0;
-  }
-
-  #page-content {
-    margin-left: 16rem;
-    margin-right: 0rem;
   }
 
   #brand-logo{

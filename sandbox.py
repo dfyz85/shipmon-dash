@@ -17,7 +17,7 @@ app = dash.Dash(
         {"name": "viewport", "content": "width=device-width, initial-scale=1"},
         {'name': 'description','content': 'ShipMOnitor Service for monitoring your vessels.'},
     ],
-)
+    )
 app.index_string = ''' <!DOCTYPE html>
             <html>
                 <head>
@@ -37,7 +37,7 @@ app.index_string = ''' <!DOCTYPE html>
             </html> '''
 server = app.server #For Digital ocean
 mapOffLine = 'http://localhost/assets/'
-#SIDEBARs
+#SIDEBAR
 #'local' 
 #veseelsCharterLink = dcc.Dropdown(style={'color':'black'})
 #veseelsGroupLink = dcc.Dropdown(style={'color':'black'})
@@ -99,14 +99,22 @@ def serve_layout():
             ],
             className="dash-black px-3 pl-sm-0"
         ),
-        className="m-0 py-1"
+        className="m-0 py-1",
+        style={'height': '7vh','min-height':'45px'}
      )
     vesselsStatistiks = html.Div(
         getVesselsStatistiks(dfVessels),
         className='pt-2',
         id="blurb",
      )
-    vesselsMenu = dbc.Button("Vessel menu", id="vessel-menu", color="primary", block=True, className='my-2',n_clicks=0,style={'visibility':'hidden'})
+    vesselsMenu = dbc.Button(
+        "Vessel menu", 
+        id="vessel-menu", 
+        color="primary", 
+        block=True, 
+        className='my-2',
+        n_clicks=0,
+        style={'visibility':'hidden'})
     vesselsPositionMap = dbc.Container(
         dbc.Row(
             dbc.Col(
@@ -118,6 +126,7 @@ def serve_layout():
                             id="world-map-mapbox",
                             figure=vesselspositionMapbox(dfVessels),
                             config={"displayModeBar": False, "scrollZoom": False},
+                            style={'height': '93vh'}
                             ),  
                         ],
                     #style={'margin-left': '0px','margin-top':'-10px'}
@@ -128,7 +137,8 @@ def serve_layout():
             className='m-0'     
          ),
         fluid=True,
-        className = "p-0")
+        className = "p-0",
+        )
     sidebar = html.Div(
         [
             sidebar_header,
@@ -195,7 +205,8 @@ def serve_layout():
             ),     
             sidebar, 
             content
-        ]
+        ],
+        id="content"
      )
 app.layout = serve_layout
 
