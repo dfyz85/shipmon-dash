@@ -87,6 +87,18 @@ def getDFfromDB(server='cloud'):
       "draught":{"$first":"$draught"},
       "time":{"$first":"$time"}
       }
+    },
+    {"$lookup": {
+      "from": "shipsData",
+      "localField": "_id",   
+      "foreignField": "imo", 
+      "as": "fromShipsData"
+      }
+    },
+    {
+        "$replaceRoot": { "newRoot": { "$mergeObjects": [ { "$arrayElemAt": [ "$fromShipsData", 0 ] }, "$$ROOT" ] } }
+    },
+    { "$project": { "fromShipsData": 0 }
     }
   ]
   if server == 'cloud':

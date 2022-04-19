@@ -102,7 +102,8 @@ def vesselspositionMapbox(df,vessel='deafult'):
                         'color':'#228B22',
                     },
                     hovertemplate =[(
-                        "<b>Name:{} </b><br><br>" +
+                        "<b>Name:{} </b><br>" +
+                        "IMO:{}<br>"+
                         "POSITION<br>"+
                         "Last update {} UTC<br>"+
                         "Longitude:{}<br>" +
@@ -113,7 +114,11 @@ def vesselspositionMapbox(df,vessel='deafult'):
                         "Trip from: {} <br>"+
                         "Trip to: {} <br>"+
                         "ETA(approximately): {}<br>"+
-                        "<extra></extra>").format(vesselName,time,lat,lon,status,speed,course,departure,arrival,eta) for vesselName,time,lat,lon,status,speed,course,departure,arrival,eta in zip(vesselNamess,df['time'],latss,lonss,df['status'],df['speed'],df['course'],df['departure'],df['arrival'],df['eta'])]
+                        "CLASSIFICATION<br>"+
+                        "Type:{}<br>"+
+                        "Last:{}<br>"+
+                        "Next:{}<br>"+
+                        "<extra></extra>").format(vesselName,imo,time,lat,lon,status,speed,course,departure,arrival,eta,typeClass,registerLast,registerNext) for vesselName,imo,time,lat,lon,status,speed,course,departure,arrival,eta,typeClass,registerLast,registerNext in zip(vesselNamess,df['_id'],df['time'],latss,lonss,df['status'],df['speed'],df['course'],df['departure'],df['arrival'],df['eta'],df['registerType'],df['registerLast'],df['registerNext'])]
      )]
     map_layout_mapbox = {
         "mapbox": {
@@ -149,7 +154,8 @@ def vesselspositionMapbox(df,vessel='deafult'):
                         'color':'red'                   
                     },
                     hovertemplate =[(
-                        "<b>Name:{} </b><br><br>" +
+                        "<b>Name:{} </b><br>" +
+                        "IMO:{}<br>"+
                         "POSITION<br>"+
                         "Last update {} UTC<br>"+
                         "Longitude:{}<br>" +
@@ -158,9 +164,13 @@ def vesselspositionMapbox(df,vessel='deafult'):
                         "Speed:{} <br>"+
                         "Course:{} <br>"+
                         "Trip from: {} <br>"+
-                        "Trip to:   {} <br>"+
+                        "Trip to: {} <br>"+
                         "ETA(approximately): {}<br>"+
-                        "<extra></extra>").format(vesselName,time,lat,lon,status,speed,course,departure,arrival,eta) for vesselName,time,lat,lon,status,speed,course,departure,arrival,eta in zip(dff['name'],dff['time'],dff['lat'],dff['lon'],dff['status'],dff['speed'],dff['course'],dff['departure'],dff['arrival'],dff['eta'])]
+                        "CLASSIFICATION<br>"+
+                        "Type:{}<br>"+
+                        "Last:{}<br>"+
+                        "Next:{}<br>"+
+                        "<extra></extra>").format(vesselName,imo,time,lat,lon,status,speed,course,departure,arrival,eta,typeClass,registerLast,registerNext) for vesselName,imo,time,lat,lon,status,speed,course,departure,arrival,eta,typeClass,registerLast,registerNext in zip(vesselNamess,df['_id'],df['time'],latss,lonss,df['status'],df['speed'],df['course'],df['departure'],df['arrival'],df['eta'],df['registerType'],df['registerLast'],df['registerNext'])]
                 ))
         map_layout_mapbox['mapbox']['center'] = {'lat':int(float(dff['lat'].values[0])-5), 'lon':int(float(dff['lon'].values[0]))}
     figure={"data": map_data_mapbox, "layout": map_layout_mapbox}
