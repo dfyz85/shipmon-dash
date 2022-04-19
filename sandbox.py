@@ -12,10 +12,14 @@ from tools.dashboardtools import tanks, vesselspositionScat, vesselspositionMapb
 #external_stylesheets = [dbc.themes.BOOTSTRAP]
 app = dash.Dash(
     __name__,
+    external_scripts = [
+        'https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js',
+        'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.2/mapbox-gl-draw.js'
+    ],
     #external_stylesheets=external_stylesheets,
     meta_tags=[
-        {"name": "viewport", "content": "width=device-width, initial-scale=1"},
-        {'name': 'description','content': 'ShipMOnitor Service for monitoring your vessels.'},
+        {"name": "viewport", "content": "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"},
+        {'name': 'description','content': 'Fleet monitor Service for monitoring vessels. Crete by BRIESE CREW'},
     ],
     )
 app.index_string = ''' <!DOCTYPE html>
@@ -250,4 +254,4 @@ def display_page(n,data):
         raise PreventUpdate
     
 if __name__ == "__main__":
-    app.run_server(debug=False,port=8080,host="0.0.0.0")
+    app.run_server(debug=True,port=8080,host="0.0.0.0")

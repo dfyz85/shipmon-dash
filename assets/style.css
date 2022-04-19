@@ -10,11 +10,12 @@ body{
   background-color: #212121;
 }
 @keyframes color-cheange{
-  0%,100% {color: #212121;}
+  0%,100%{color: #212121;}
   50% {color: white;}
 }
 
 ._dash-loading{
+  display: flex;
   color: white;
   font-size: 0px;
   position: absolute;
@@ -24,8 +25,10 @@ body{
   width: 120px;
   height: 120px;
   animation-name: color-cheange;
-  animation-duration: 2s; 
+  animation-duration: 4s;
   animation-iteration-count: infinite;
+  animation-timing-function: ease;
+
   /* margin: -76px 0 0 -76px;
   border: 16px solid #f3f3f3;
   border-radius: 50%;
@@ -35,11 +38,13 @@ body{
 }
 ._dash-loading::before {
   font-size: 14px;
-  content: "BRIESE ";
+  width: 80px;
+  content: url(/assets/logo_briese_schiffahrt.svg);
 }
-._dash-loading::after {
+._dash-loading::after{
   font-size: 14px;
-  content: "CREW";
+  padding-left: 4px;
+  content: "BRIESE CREW";
 }
 #content{
   display: flex;
